@@ -1,0 +1,31 @@
+CREATE TABLE IF NOT EXISTS suca_messages (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  wa_message_id VARCHAR(120) NOT NULL,
+  phone VARCHAR(30) NOT NULL,
+  body TEXT NOT NULL,
+  user_timestamp BIGINT UNSIGNED NOT NULL,
+  status ENUM('pending','processing','done','failed') NOT NULL DEFAULT 'pending',
+  attempts TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  next_attempt_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  reply_body TEXT NULL,
+  error_text VARCHAR(500) NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_wa_message (wa_message_id),
+  KEY idx_queue (status, next_attempt_at, id),
+  KEY idx_phone (phone, id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS suca_leads (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  phone VARCHAR(30) NOT NULL,
+  profile_json JSON NOT NULL,
+  client_id BIGINT UNSIGNED NULL,
+  ticket_id BIGINT UNSIGNED NULL,
+  call_id BIGINT UNSIGNED NULL,
+  last_wa_message_id VARCHAR(120) NULL,
+  human_paused_until DATETIME NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_phone (phone)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

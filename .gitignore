@@ -1,0 +1,3 @@
+/.env
+/var/
+/.phpunit.result.cache
