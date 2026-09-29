@@ -32,6 +32,13 @@ try {
         foreach (($entry['changes'] ?? []) as $change) {
             $value = $change['value'] ?? [];
             if ((string) ($value['metadata']['phone_number_id'] ?? '') !== $config['phone_number_id']) continue;
+            if (($change['field'] ?? '') === 'smb_message_echoes') {
+                foreach (($value['message_echoes'] ?? []) as $echo) {
+                    $recipient = preg_replace('/\D/', '', (string) ($echo['to'] ?? '')) ?: '';
+                    if (strlen($recipient) >= 8 && strlen($recipient) <= 15) $repo->pauseHuman($recipient);
+                }
+                continue;
+            }
             foreach (($value['messages'] ?? []) as $message) {
                 $id = (string) ($message['id'] ?? '');
                 $phone = preg_replace('/\D/', '', (string) ($message['from'] ?? '')) ?: '';

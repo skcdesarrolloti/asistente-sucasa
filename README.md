@@ -9,6 +9,7 @@ Asistente para mensajes **entrantes** de WhatsApp Business Platform (Cloud API).
 3. PHP busca únicamente inmuebles publicados por código o filtros. Los datos reales se pasan a MiniMax para redactar la respuesta.
 4. Ante interés comercial se registra o reutiliza cliente y ticket; si solicita llamada se crea `wp_jet_cct_cct_llamadas`. Un inmueble concreto dirige al funcionario de `id_funcionario`; si no hay inmueble se usa `ZONE_EMPLOYEES`, luego `DEFAULT_EMPLOYEE_ID`.
 5. Si pide atención humana, se pausa la IA 24 horas para ese contacto. No se envían campañas ni mensajes iniciados por el bot.
+6. En coexistencia, cuando un asesor responde desde la app WhatsApp Business, el webhook `smb_message_echoes` pausa también la IA 24 horas para ese contacto.
 
 ## Requisitos
 

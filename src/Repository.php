@@ -153,7 +153,9 @@ final class Repository
 
     public function pauseHuman(string $phone, int $hours = 24): void
     {
-        $this->db->prepare('UPDATE suca_leads SET human_paused_until = DATE_ADD(NOW(), INTERVAL ? HOUR) WHERE phone = ?')->execute([$hours, $phone]);
+        $hours = max(1, min(72, $hours));
+        $this->db->prepare('INSERT INTO suca_leads (phone, profile_json, human_paused_until) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL ? HOUR)) ON DUPLICATE KEY UPDATE human_paused_until = VALUES(human_paused_until)')
+            ->execute([$phone, '{}', $hours]);
     }
 
     private function upsertClient(string $phone, array $profile): int
