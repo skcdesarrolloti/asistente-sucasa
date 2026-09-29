@@ -28,6 +28,8 @@ php bin/check.php
 
 Configura el document root o una ruta pública para `public/webhook.php`. En Meta, selecciona el campo `messages` del webhook y usa la URL HTTPS y `META_VERIFY_TOKEN` configurados. Protege `src/`, `bin/`, `.env` y `sql/` fuera del document root.
 
+Abrir `public/webhook.php` en el navegador solo comprueba que el archivo PHP responde. El texto «Webhook SuCasa disponible» no confirma credenciales, base de datos ni coexistencia. La verificación real de Meta usa `hub.mode=subscribe`, `hub.verify_token` y `hub.challenge`; después ejecuta `php bin/check.php` en el servidor para comprobar configuración y SQL. Los errores se registran en el log de PHP como `SuCasa webhook: ...`.
+
 Ejecuta el worker cada minuto desde cron:
 
 ```cron

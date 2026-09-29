@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 final class Config
 {
-    public static function load(string $root): array
+    public static function load(string $root, ?array $required = null): array
     {
         $file = $root . '/.env';
         if (is_file($file)) {
@@ -17,7 +17,7 @@ final class Config
                 }
             }
         }
-        $required = ['DB_DSN', 'DB_USER', 'META_VERIFY_TOKEN', 'META_APP_SECRET', 'META_ACCESS_TOKEN', 'META_PHONE_NUMBER_ID', 'MINIMAX_API_KEY'];
+        $required ??= ['DB_DSN', 'DB_USER', 'META_VERIFY_TOKEN', 'META_APP_SECRET', 'META_ACCESS_TOKEN', 'META_PHONE_NUMBER_ID', 'MINIMAX_API_KEY'];
         foreach ($required as $key) {
             if (trim((string) getenv($key)) === '') throw new RuntimeException("Falta {$key}");
         }

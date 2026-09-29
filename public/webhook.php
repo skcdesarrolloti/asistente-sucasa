@@ -4,9 +4,14 @@ declare(strict_types=1);
 require_once dirname(__DIR__) . '/bootstrap.php';
 
 try {
-    [$config, , $repo] = app();
     if (($_SERVER['REQUEST_METHOD'] ?? '') === 'GET') {
         $mode = $_GET['hub_mode'] ?? $_GET['hub.mode'] ?? '';
+        if ($mode === '') {
+            header('Content-Type: text/plain; charset=utf-8');
+            echo 'Webhook SuCasa disponible. Esta pagina no confirma la conexion con Meta ni con la base de datos.';
+            exit;
+        }
+        $config = Config::load(dirname(__DIR__), ['META_VERIFY_TOKEN']);
         $token = $_GET['hub_verify_token'] ?? $_GET['hub.verify_token'] ?? '';
         if ($mode === 'subscribe' && hash_equals($config['verify_token'], (string) $token)) {
             header('Content-Type: text/plain');
@@ -17,6 +22,7 @@ try {
         exit;
     }
     if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') { http_response_code(405); exit; }
+    [$config, , $repo] = app();
     $raw = file_get_contents('php://input') ?: '';
     $signature = (string) ($_SERVER['HTTP_X_HUB_SIGNATURE_256'] ?? '');
     $expected = 'sha256=' . hash_hmac('sha256', $raw, $config['app_secret']);
