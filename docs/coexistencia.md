@@ -15,10 +15,16 @@ Estado observado en Meta el 29 de septiembre de 2026:
 
 ## Siguiente secuencia
 
-1. Completar los datos de la app, preparar los videos y enviar la revisión para proveedor de tecnología independiente. Obtener acceso avanzado antes de atender clientes reales.
+1. Para producción, completar los datos de la app, preparar los videos y enviar la revisión para proveedor de tecnología independiente. El panel permite empezar un prototipo con usuarios agregados manualmente a los roles de la app antes de completar la revisión y la verificación de acceso; no es necesario esperar esa revisión para iniciar una prueba.
 2. Lanzar Embedded Signup v4 con el ID de configuración anterior y `extras.featureType = "whatsapp_business_app_onboarding"`, elegir **Conectar cuenta existente** y completar en el teléfono el código/QR de verificación. No migrar el número por el flujo estándar si se desea mantener la app móvil.
 3. Confirmar con Graph API que `is_on_biz_app` sea `true` y `platform_type` sea `CLOUD_API` para el ID del número. Confirmar que la app móvil sigue activa.
 4. Crear un token de usuario del sistema para el servidor, configurar las variables faltantes de `.env` en el alojamiento, comprobar el webhook y ejecutar `php bin/check.php`.
 5. Publicar la app según el proceso de Meta, enviar un mensaje de prueba desde un tercero y revisar `suca_messages`, el worker y el ticket en la base de datos.
 
 La [guía oficial de Meta](https://developers.facebook.com/documentation/business-messaging/whatsapp/embedded-signup/onboarding-business-app-users) indica que coexistencia requiere un socio de soluciones o proveedor de tecnología. El registro en la app móvil y la selección de compartir el historial requieren acción del titular del número. No pegues tokens ni secretos en chats o capturas.
+
+## Prueba iniciada el 1 de octubre de 2026
+
+En el Administrador de registro insertado se seleccionaron la configuración `1589704446264976`, versión v4, información de sesión 3 y tipo de función **Registro de app de WhatsApp Business**. Meta generó este [registro alojado para coexistencia](https://business.facebook.com/messaging/whatsapp/onboard/?app_id=1443954760961197&config_id=1589704446264976&extras=%7B%22featureType%22%3A%22whatsapp_business_app_onboarding%22%2C%22sessionInfoVersion%22%3A%223%22%2C%22version%22%3A%22v4%22%7D).
+
+La primera pantalla del diálogo se abrió correctamente y solicita aceptar las condiciones de Cloud API y Meta para WhatsApp Business. El titular eligió completar ese paso personalmente en Meta. Todavía no se ha completado el alta ni se ha comprobado el estado `CLOUD_API` del 2054.
