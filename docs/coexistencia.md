@@ -15,7 +15,7 @@ Estado observado en Meta el 29 de septiembre de 2026:
 
 ## Siguiente secuencia
 
-1. Para producción, completar los datos de la app, preparar los videos y enviar la revisión para proveedor de tecnología independiente. El panel permite empezar un prototipo con usuarios agregados manualmente a los roles de la app antes de completar la revisión y la verificación de acceso; no es necesario esperar esa revisión para iniciar una prueba.
+1. Completar los datos de la app, preparar los videos y enviar la revisión para proveedor de tecnología independiente. El panel permite abrir un prototipo con usuarios agregados manualmente a los roles de la app, pero el intento del 1 de octubre confirmó que el alta de coexistencia del 2054 exige acceso avanzado a ambos permisos de WhatsApp (error 2655111).
 2. Lanzar Embedded Signup v4 con el ID de configuración anterior y `extras.featureType = "whatsapp_business_app_onboarding"`, elegir **Conectar cuenta existente** y completar en el teléfono el código/QR de verificación. No migrar el número por el flujo estándar si se desea mantener la app móvil.
 3. Confirmar con Graph API que `is_on_biz_app` sea `true` y `platform_type` sea `CLOUD_API` para el ID del número. Confirmar que la app móvil sigue activa.
 4. Crear un token de usuario del sistema para el servidor, configurar las variables faltantes de `.env` en el alojamiento, comprobar el webhook y ejecutar `php bin/check.php`.
@@ -27,4 +27,6 @@ La [guía oficial de Meta](https://developers.facebook.com/documentation/busines
 
 En el Administrador de registro insertado se seleccionaron la configuración `1589704446264976`, versión v4, información de sesión 3 y tipo de función **Registro de app de WhatsApp Business**. Meta generó este [registro alojado para coexistencia](https://business.facebook.com/messaging/whatsapp/onboard/?app_id=1443954760961197&config_id=1589704446264976&extras=%7B%22featureType%22%3A%22whatsapp_business_app_onboarding%22%2C%22sessionInfoVersion%22%3A%223%22%2C%22version%22%3A%22v4%22%7D).
 
-La primera pantalla del diálogo se abrió correctamente y solicita aceptar las condiciones de Cloud API y Meta para WhatsApp Business. El titular eligió completar ese paso personalmente en Meta. Todavía no se ha completado el alta ni se ha comprobado el estado `CLOUD_API` del 2054.
+El titular avanzó desde la pantalla de condiciones. Como el 2054 no aparecía en el selector, se seleccionó entrada manual, país Colombia (+57) y número 3015232054. Al pulsar Siguiente, Meta rechazó el registro con el error **2655111**: la app de socio no tiene los permisos avanzados de mensajes y administración de WhatsApp Business necesarios para el registro y debe solicitarlos mediante revisión de apps.
+
+La solicitud de revisión aparece **No enviada**, sin permisos agregados. Intentar agregar `whatsapp_business_management` abre el requisito de identificación como Tech Provider y verificación de acceso. El panel de proveedor independiente sigue en **1 de 2 pasos completados**: negocio aprobado y revisión pendiente. No se ha completado el alta ni se ha comprobado el estado `CLOUD_API` del 2054; este error tampoco demuestra por sí solo que el número no sea elegible.
