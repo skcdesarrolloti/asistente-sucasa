@@ -29,6 +29,8 @@ try {
             echo "Conversación reiniciada.\n";
             continue;
         }
+        $previous = [$history, $profile, $ticketId, $actions];
+        try {
         $extracted = $llm->extract($message, $history);
         $profile = array_merge($profile, array_filter($extracted, static fn($v) => $v !== '' && $v !== null && $v !== false));
         if (in_array($extracted['intent'], ['commercial', 'human'], true) || $extracted['wants_call']) {
@@ -49,6 +51,11 @@ try {
             $profile = [];
             $ticketId = null;
             $actions = ['client_id' => null, 'call_id' => null];
+        }
+        } catch (Throwable $e) {
+            [$history, $profile, $ticketId, $actions] = $previous;
+            fwrite(STDERR, 'No se pudo procesar este mensaje: ' . $e->getMessage() . "\n");
+            echo "La conversación anterior se conserva. Puede intentar de nuevo o escribir /salir.\n";
         }
     }
 } catch (Throwable $e) {

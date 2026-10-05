@@ -50,6 +50,10 @@ Usa la API MiniMax configurada en `.env` y consume su cuota. No requiere credenc
 
 Revise extracción y respuesta. Si un caso falla, conserve únicamente un ejemplo ficticio y ajuste la regla correspondiente antes de repetirlo.
 
+El historial se envía como datos a la extracción, para evitar que el modelo continúe la conversación en lugar de devolver JSON. El cliente valida el esquema y admite campos de texto desconocidos como null. Ante una salida truncada o vacía, reintenta una vez con un límite mayor; ante JSON inválido, repite una vez la extracción. Si persiste el error, el simulador conserva el estado anterior y permite seguir. No utiliza datos parciales para registrar una solicitud. Los reintentos pueden aumentar el tiempo y el consumo de cuota.
+
+Pruebas de extracción sin API: `php tests/extraction.php`.
+
 ## Conectar el nuevo número
 
 Todavía se necesita el nuevo `META_PHONE_NUMBER_ID` y el token autorizado para ese número, además de `META_APP_SECRET`, webhook y cron operativos. No reutilice el ID del 2054 para el nuevo número. Registrar un número en la app móvil no demuestra conexión a Cloud API. Confirme en Meta el número y la cuenta WABA que se usarán; luego configure las credenciales directamente en el servidor.
