@@ -39,12 +39,14 @@ while ($count < 20 && ($job = $repo->claim())) {
         $profile = array_merge($lead['profile'], array_filter($extracted, static fn($v) => $v !== '' && $v !== null && $v !== false));
         $property = $repo->propertyByCode((string) ($profile['property_code'] ?? ''));
         $properties = $property ? [$property] : $repo->searchProperties($profile);
-        $commercial = in_array($extracted['intent'], ['commercial', 'human'], true) || $extracted['wants_call'] || $property;
+        $commercial = in_array($extracted['intent'], ['commercial', 'human'], true) || $extracted['wants_call'] || $property || !empty($lead['ticket_id']);
         $ticketId = $lead['ticket_id'] ? (int) $lead['ticket_id'] : null;
+        $actions = ['client_id' => $lead['client_id'], 'call_id' => $lead['call_id']];
         if ($commercial) {
             $saved = $repo->saveProspect($phone, $job['body'], $profile, $property, $extracted['wants_call'], (string) $job['wa_message_id']);
             $profile = $saved['profile'];
             $ticketId = $saved['ticket_id'];
+            $actions = ['client_id' => $saved['client_id'], 'call_id' => $saved['call_id'], 'call_requested' => $extracted['wants_call']];
         } else {
             $repo->rememberProfile($phone, $profile);
         }
@@ -53,7 +55,7 @@ while ($count < 20 && ($job = $repo->claim())) {
             return $row;
         };
         $reply = $llm->reply($job['body'], $history, $profile, array_map($safeProperty, $properties),
-            $property ? $safeProperty($property) : null, $ticketId);
+            $property ? $safeProperty($property) : null, $ticketId, $actions);
         $repo->storeReply($id, $reply);
         $meta->sendText($phone, $reply);
         $repo->finish($id, $reply);

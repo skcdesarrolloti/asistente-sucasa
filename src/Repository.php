@@ -134,7 +134,8 @@ final class Repository
                 return ['client_id' => (int) $lead['client_id'], 'ticket_id' => (int) $lead['ticket_id'],
                     'call_id' => $lead['call_id'] ? (int) $lead['call_id'] : null, 'profile' => $profile];
             }
-            $clientId = $lead['client_id'] ?: $this->upsertClient($phone, $profile);
+            // Refresh name/email learned after the first commercial message too.
+            $clientId = $this->upsertClient($phone, $profile);
             $employee = $this->employee($property, $profile);
             $description = 'Prospecto WhatsApp IA. Mensaje: ' . mb_substr($message, 0, 1500) . "\nPerfil: " . json_encode($profile, JSON_UNESCAPED_UNICODE);
             $ticketId = $lead['ticket_id'] ?: $this->insertTicket($phone, $clientId, $employee, $description, $profile, $property);
@@ -172,7 +173,7 @@ final class Repository
             return (int) $id;
         }
         $this->db->prepare("INSERT INTO wp_jet_cct_clientes (cct_status, cct_created, cct_modified, nombre, indicativo, celular, correo, tipo_cliente) VALUES ('publish', NOW(), NOW(), ?, ?, ?, ?, 'Prospecto WhatsApp IA')")
-            ->execute([$profile['name'] ?? 'Cliente WhatsApp ' . $local, str_starts_with($phone, '57') ? '+57' : '', $local, $profile['email'] ?? '']);
+            ->execute([!empty($profile['name']) ? $profile['name'] : 'Cliente WhatsApp ' . $local, str_starts_with($phone, '57') ? '+57' : '', $local, $profile['email'] ?? '']);
         $id = (int) $this->db->lastInsertId();
         $this->db->prepare('UPDATE wp_jet_cct_clientes SET id_cliente = ? WHERE _ID = ?')->execute([(string) $id, $id]);
         return $id;

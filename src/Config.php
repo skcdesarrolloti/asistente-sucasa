@@ -24,6 +24,7 @@ final class Config
         $zones = json_decode((string) (getenv('ZONE_EMPLOYEES') ?: '{}'), true);
         if (!is_array($zones)) throw new RuntimeException('ZONE_EMPLOYEES debe ser JSON');
         return [
+            'training_dir' => $root . '/training',
             'db_dsn' => (string) getenv('DB_DSN'),
             'db_user' => (string) getenv('DB_USER'),
             'db_password' => (string) (getenv('DB_PASSWORD') ?: ''),

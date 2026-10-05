@@ -11,7 +11,13 @@ Asistente para mensajes **entrantes** de WhatsApp Business Platform (Cloud API).
 5. Si pide atención humana, se pausa la IA 24 horas para ese contacto. No se envían campañas ni mensajes iniciados por el bot.
 6. En coexistencia, cuando un asesor responde desde la app WhatsApp Business, el webhook `smb_message_echoes` pausa también la IA 24 horas para ese contacto.
 
-## Requisitos
+## Reglas de atención y ensayo
+
+El plan actual es usar otro número en Cloud API. El asistente atiende por texto. Ajusta `training/atencion.md` y `training/negocio.md` para enseñarle el tono y los procesos aprobados de SuCasa. Los registros de llamada son solicitudes para asesores.
+
+Ejecuta `php bin/simulate.php` para conversar con MiniMax usando datos ficticios, sin escribir en SQL ni enviar WhatsApp. Consulta [la guía de entrenamiento](docs/entrenamiento.md) para los casos de prueba y las limitaciones actuales. Publica la carpeta `training/` junto con el código.
+
+## Requisitos de ejecución
 
 - PHP 8.2+ con `pdo_mysql`, `curl`, `mbstring`, `json`; MySQL 8+ (usa `SKIP LOCKED`).
 - Acceso SQL a las cinco tablas CCT suministradas y permisos para crear `suca_messages` y `suca_leads`.
